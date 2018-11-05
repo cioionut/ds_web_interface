@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
 import {
   Collapse,
   Navbar,
@@ -10,25 +12,21 @@ import {
   Container,
   Row,
   Col,
-  Jumbotron,
-  Button,
-  Form, FormGroup, Label, Input, FormText
+  Form, FormGroup, Label, Input
 } from 'reactstrap';
 
 
 class NLUResponse extends Component {
-  constructor(props) {
-    super(props);
-    this.slotList = "test slot"
-  }
 
   render() {
     return (
       <div>
-        <p>Intent: {this.props.intent}</p>
+        <h4>Intent: <span className="badge badge-secondary"> {this.props.intent} </span></h4>
         <p>Slots:</p>
         <ul>
-          {this.slotList}
+          {this.props.slots.map((slot, idx) => {
+            return (<li key={idx}><h4> {slot[0]} <span className="badge badge-secondary"> {slot[1]} </span></h4></li>)
+          })}
         </ul>
       </div>
     );
@@ -40,23 +38,43 @@ class App extends Component {
     super(props);
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.handleUtterance = this.handleUtterance.bind(this);
-  
+    this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
+    this.handleSubmitFrom = this.handleSubmitFrom.bind(this);
+
     this.state = {
       collapsed: true,
       nluResponse: {
-        "intent": "test",
-        "slots": {
-          "slot0": "utt_word",
-          "slot1": "utt_word"
-        }
-      }
+        pred_slot_seq: "test",
+        pred_intent_label: "test",
+        pred_slot_labels: [
+          ["slot0", "utt_word"],
+          ["slot1", "utt_word"]
+        ]
+      },
+      utterance: ""
     };
   }
 
-  handleUtterance(elem) {
-    elem.preventDefault()
-    console.log("request to server")
+  handleUtteranceChange(elem) {
+    this.setState({utterance: elem.target.value})
+  }
+
+  handleSubmitFrom(elem) {
+    elem.preventDefault();
+
+    axios.post('http://127.0.0.1:5000/api/v1/nlu', {
+        "utterance": this.state.utterance
+    })
+    .then(function (response) {
+      this.setState({nluResponse: response.data});
+      console.log(this.state);
+    }.bind(this))
+    .catch(function (error) {
+      console.log(error);
+    })
+    .then(function () {
+      // always executed
+    }); 
   }
 
   toggleNavbar() {
@@ -83,10 +101,12 @@ class App extends Component {
       <Container>
         <Row>
           <Col>
-            <Form onSubmit={this.handleUtterance}>
+            <Form onSubmit={this.handleSubmitFrom}>
               <FormGroup>
                 <Label for="utterance">Ask about flights</Label>
-                <Input type="text" name="utterance" id="utterance" 
+                <Input type="text" name="utterance" id="utterance"
+                  value={this.state.utterance}
+                  onChange={this.handleUtteranceChange} 
                   placeholder="show me all flights from Las Vegas to Atlanta" />
               </FormGroup>
             </Form>
@@ -96,8 +116,8 @@ class App extends Component {
           <Col>
             NLU Response:
             <NLUResponse
-              intent={this.state.nluResponse.intent}
-              slots={this.state.nluResponse.slots}
+              intent={this.state.nluResponse.pred_intent_label}
+              slots={this.state.nluResponse.pred_slot_labels}
             />
           </Col>
         </Row>
