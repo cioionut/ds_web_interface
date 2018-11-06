@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import {
   Collapse,
@@ -62,19 +61,22 @@ class App extends Component {
   handleSubmitFrom(elem) {
     elem.preventDefault();
 
-    axios.post('http://127.0.0.1:5000/api/v1/nlu', {
-        "utterance": this.state.utterance
+    let url = 'http://127.0.0.1:5000/api/v1/nlu'
+    let reqUtterance = {
+      "utterance": this.state.utterance
+    }
+
+    fetch(url, {
+      method: 'POST', // or 'PUT'
+      body: JSON.stringify(reqUtterance), // data can be `string` or {object}!
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json())
+    .then(response => {
+      this.setState({nluResponse: response})
     })
-    .then(function (response) {
-      this.setState({nluResponse: response.data});
-      console.log(this.state);
-    }.bind(this))
-    .catch(function (error) {
-      console.log(error);
-    })
-    .then(function () {
-      // always executed
-    }); 
+    .catch(error => console.error('Error:', error));
   }
 
   toggleNavbar() {
