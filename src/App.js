@@ -18,12 +18,13 @@ import {
 class NLUResponse extends Component {
 
   render() {
+    const slots = this.props.slots.filter((slot, idx) => slot[1] !== "O")
     return (
       <div>
         <h4>Intent: <span className="badge badge-secondary"> {this.props.intent} </span></h4>
         <p>Slots:</p>
         <ul>
-          {this.props.slots.map((slot, idx) => {
+          {slots.map((slot, idx) => {
             return (<li key={idx}><h4> {slot[0]} <span className="badge badge-secondary"> {slot[1]} </span></h4></li>)
           })}
         </ul>
@@ -43,12 +44,13 @@ class App extends Component {
     this.state = {
       collapsed: true,
       nluResponse: {
-        pred_slot_seq: "test",
+        pred_slot_labels_str: "test",
         pred_intent_label: "test",
         pred_slot_labels: [
           ["slot0", "utt_word"],
           ["slot1", "utt_word"]
-        ]
+        ],
+        message: ""
       },
       utterance: ""
     };
@@ -72,9 +74,15 @@ class App extends Component {
       headers:{
         'Content-Type': 'application/json'
       }
-    }).then(res => res.json())
+    })
+    .then(res => {
+      if (res.status !== 200)
+        return undefined
+      return res.json();
+    })
     .then(response => {
-      this.setState({nluResponse: response})
+      if (response)
+        this.setState({nluResponse: response})
     })
     .catch(error => console.error('Error:', error));
   }
