@@ -90,6 +90,34 @@ class App extends Component {
       collapsed: !this.state.collapsed
     });
   }
+
+  componentDidMount() {
+    
+    let utt = "i'd like a flight on july ninth from orlando to kansas city in the afternoon";
+    this.setState({utterance: utt});
+    let url = new URL('https://cionlu.herokuapp.com/api/v1/nlu');
+
+    let params = {utterance: utt};
+    url.search = new URLSearchParams(params);
+
+    fetch(url, {
+      method: 'GET',
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      if (res.status !== 200)
+        return undefined
+      return res.json();
+    })
+    .then(response => {
+      if (response)
+        this.setState({nluResponse: response})
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
   render() {
     return (
       <div>
@@ -115,7 +143,7 @@ class App extends Component {
                 <Input type="text" name="utterance" id="utterance"
                   value={this.state.utterance}
                   onChange={this.handleUtteranceChange} 
-                  placeholder="show me all flights from Las Vegas to Atlanta" />
+                  placeholder="i'd like a flight on july ninth from orlando to kansas city in the afternoon" />
               </FormGroup>
             </Form>
           </Col>
