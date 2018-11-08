@@ -11,7 +11,7 @@ import {
   Container,
   Row,
   Col,
-  Form, FormGroup, Label, Input
+  Form, FormGroup, Label, Input, Button
 } from 'reactstrap';
 
 
@@ -140,10 +140,11 @@ class App extends Component {
             <Form onSubmit={this.handleSubmitFrom}>
               <FormGroup>
                 <Label for="utterance">Ask about flights</Label>
-                <Input type="text" name="utterance" id="utterance"
+                <Input type="textarea" name="utterance" id="utterance"
                   value={this.state.utterance}
                   onChange={this.handleUtteranceChange} 
                   placeholder="i'd like a flight on july ninth from orlando to kansas city in the afternoon" />
+                <Button color="info" type="submit">Send</Button>
               </FormGroup>
             </Form>
           </Col>
