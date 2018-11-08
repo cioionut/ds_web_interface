@@ -73,7 +73,10 @@ class App extends Component {
 
     fetch(url, {
       method: 'GET',
-      mode: "cors"
+      mode: "cors",
+      headers: {
+        "Content-Type": "text/html"
+      }
     })
     .then(res => {
       if (res.status !== 200)
@@ -104,7 +107,10 @@ class App extends Component {
 
     fetch(url, {
       method: 'GET',
-      mode: "cors"
+      mode: "cors",
+      headers: {
+        "Content-Type": "text/html"
+      }
     })
     .then(res => {
       if (res.status !== 200)
