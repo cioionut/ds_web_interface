@@ -62,15 +62,13 @@ class App extends Component {
 
   handleSubmitFrom(elem) {
     elem.preventDefault();
+    let url = new URL('https://cionlu.herokuapp.com/api/v1/nlu')
 
-    let url = 'http://127.0.0.1:5000/api/v1/nlu'
-    let reqUtterance = {
-      "utterance": this.state.utterance
-    }
+    let params = {utterance: this.state.utterance}    ;
+    url.search = new URLSearchParams(params)
 
     fetch(url, {
-      method: 'POST', // or 'PUT'
-      body: JSON.stringify(reqUtterance), // data can be `string` or {object}!
+      method: 'GET',
       headers:{
         'Content-Type': 'application/json'
       }
