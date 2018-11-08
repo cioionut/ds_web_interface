@@ -75,7 +75,7 @@ class App extends Component {
       method: 'GET',
       mode: "cors",
       headers: {
-        "Content-Type": "text/html"
+        "Content-Type": "text/plain"
       }
     })
     .then(res => {
@@ -109,7 +109,7 @@ class App extends Component {
       method: 'GET',
       mode: "cors",
       headers: {
-        "Content-Type": "text/html"
+        "Content-Type": "text/plain"
       }
     })
     .then(res => {
