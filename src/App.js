@@ -22,10 +22,14 @@ class NLUResponse extends Component {
     return (
       <div>
         <h4>Intent: <span className="badge badge-secondary"> {this.props.intent} </span></h4>
-        <p>Slots:</p>
+        <h4>Entities:</h4>
         <ul>
           {slots.map((slot, idx) => {
-            return (<li key={idx}><h4> {slot[0]} <span className="badge badge-secondary"> {slot[1]} </span></h4></li>)
+            return (<li key={idx}>
+                      <h5> {slot[0]} :::
+                        <span className="badge badge-secondary"> {slot[1]} </span>
+                      </h5>
+                    </li>)
           })}
         </ul>
       </div>
