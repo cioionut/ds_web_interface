@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './custom.css';
 
 import {
   Collapse,
@@ -11,27 +12,111 @@ import {
   Container,
   Row,
   Col,
-  Form, FormGroup, Label, Input, Button
+  Table,
+  Form, FormGroup, Input, Button, TabContent, TabPane
 } from 'reactstrap';
+import classnames from 'classnames';
 
 
 class NLUResponse extends Component {
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      activeTab: '1'
+    };
+  }
+
+  toggle(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  }
 
   render() {
-    const slots = this.props.slots.filter((slot, idx) => slot[1] !== "O")
+    let slots = {};
+    let intent = this.props.intent.replace(/atis_/, '');
+    this.props.slots.forEach(slot => {
+      let slotType = slot[1].replace(/B-|I-/, '');
+      let slotName = slot[0];
+      if (slotType !== 'O') {
+        if (slotType in slots)
+          slots[slotType] += " " + slotName;
+        else
+          slots[slotType] = slotName;
+      }
+    });
+    
     return (
       <div>
-        <h4>Intent: <span className="badge badge-secondary"> {this.props.intent} </span></h4>
-        <h4>Entities:</h4>
-        <ul>
-          {slots.map((slot, idx) => {
-            return (<li key={idx}>
-                      <h5> {slot[0]} :::
-                        <span className="badge badge-secondary"> {slot[1]} </span>
-                      </h5>
-                    </li>)
-          })}
-        </ul>
+        <p></p>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '1' })}
+              onClick={() => { this.toggle('1'); }}
+              href="#"
+            >
+            Entities
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '2' })}
+              onClick={() => { this.toggle('2'); }}
+              href="#"
+            >
+            Intention
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId="1">
+            <Row>
+              <Col sm="12">
+                <Table hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(slots).map(([type, name], idx) => {
+                      return (
+                      <tr key={idx}>
+                        <td>{name}</td>
+                        <td>{type}</td>
+                      </tr>)
+                    })}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="2">
+            <Row>
+              <Col sm="12">
+                <Table hover>
+                    <thead>
+                      <tr>
+                        <th>Type</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><h4>{intent}</h4></td>
+                      </tr>
+                    </tbody>
+                  </Table>
+              </Col>
+            </Row>
+          </TabPane>
+        </TabContent>
+        
       </div>
     );
   }
@@ -117,10 +202,11 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <div>
       <Navbar color="faded" light expand="md">
-        <NavbarBrand href="/" className="mr-auto">CIO DIALOG SYSTEM</NavbarBrand>
+        <NavbarBrand href="/" className="mr-auto brand-title">CIO Dialog System</NavbarBrand>
         <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
         <Collapse isOpen={!this.state.collapsed} navbar>
           <Nav navbar right="true" className="ml-auto">
@@ -132,24 +218,24 @@ class App extends Component {
       </Navbar>
       
       {/* main container */}
-      <Container>
+      <Container className="nlu-content">
         <Row>
           <Col>
+            <h5>Ask about your flights</h5>
             <Form onSubmit={this.handleSubmitFrom}>
               <FormGroup>
-                <Label for="utterance">Ask about flights</Label>
                 <Input type="textarea" name="utterance" id="utterance"
                   value={this.state.utterance}
                   onChange={this.handleUtteranceChange} 
                   placeholder="i'd like a flight on july ninth from orlando to kansas city in the afternoon" />
-                <Button color="info" type="submit">Send</Button>
+                <Button className="float-right submit-btn" color="info" type="submit">Analyze</Button>
               </FormGroup>
             </Form>
           </Col>
         </Row>
         <Row>
           <Col>
-            NLU Response:
+            <h5>NLU Responses</h5>
             <NLUResponse
               intent={this.state.nluResponse.pred_intent_label}
               slots={this.state.nluResponse.pred_slot_labels}
