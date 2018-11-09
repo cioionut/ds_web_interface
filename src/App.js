@@ -125,6 +125,7 @@ class NLUResponse extends Component {
 class App extends Component {
   constructor(props) {
     super(props);
+    this.startUtt = "please show me flights from pittsburgh to new york city on wednesday morning serving breakfast";
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
@@ -180,12 +181,11 @@ class App extends Component {
 
   componentDidMount() {
     
-    let utt = "i'd like a flight on july ninth from orlando to kansas city in the afternoon";
-    this.setState({utterance: utt});
-    
+    this.setState({utterance: this.startUtt});
+
     const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';    
     let url = new URL(urlStr);
-    let params = {utterance: utt};
+    let params = {utterance: this.startUtt};
     url.search = new URLSearchParams(params);
 
     fetch(url, {
@@ -229,7 +229,8 @@ class App extends Component {
                 <Input type="textarea" name="utterance" id="utterance"
                   value={this.state.utterance}
                   onChange={this.handleUtteranceChange} 
-                  placeholder="i'd like a flight on july ninth from orlando to kansas city in the afternoon" />
+                  placeholder={this.startUtt} 
+                  />
                 <Button className="float-right submit-btn" color="primary" type="submit">Analyze</Button>
               </FormGroup>
             </Form>
@@ -237,7 +238,7 @@ class App extends Component {
         </Row>
         <Row>
           <Col>
-            <h5>NLU Responses</h5>
+            <h5>See Language Understanding in action</h5>
             <NLUResponse
               intent={this.state.nluResponse.pred_intent_label}
               slots={this.state.nluResponse.pred_slot_labels}
