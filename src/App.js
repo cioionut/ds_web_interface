@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './custom.css';
-import axios from 'axios';
 
 import {
   Collapse,
@@ -153,40 +152,24 @@ class App extends Component {
   handleSubmitFrom(elem) {
     elem.preventDefault();
     const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';
+    let url = new URL(urlStr);
+    let params = {utterance: this.state.utterance};
+    url.search = new URLSearchParams(params);
 
-    axios.get(urlStr, {
-      params: {
-        "utterance": this.state.utterance
-      }
+    fetch(url, {
+      method: 'GET',
+      mode: 'cors'
     })
-    .then(function (response) {
-      this.setState({nluResponse: response.data});
-    }.bind(this))
-    .catch(function (error) {
-      console.log(error);
+    .then(res => {
+      if (res.status !== 200)
+        return undefined
+      return res.json();
     })
-    .then(function () {
-      // always executed
-    }); 
-
-    // let url = new URL(urlStr);
-    // let params = {utterance: this.state.utterance};
-    // url.search = new URLSearchParams(params);
-
-    // fetch(url, {
-    //   method: 'GET',
-    //   mode: 'cors'
-    // })
-    // .then(res => {
-    //   if (res.status !== 200)
-    //     return undefined
-    //   return res.json();
-    // })
-    // .then(response => {
-    //   if (response)
-    //     this.setState({nluResponse: response})
-    // })
-    // .catch(error => console.error('Error:', error));
+    .then(response => {
+      if (response)
+        this.setState({nluResponse: response})
+    })
+    .catch(error => console.error('Error:', error));
   }
 
   toggleNavbar() {
@@ -200,40 +183,24 @@ class App extends Component {
     let utt = "i'd like a flight on july ninth from orlando to kansas city in the afternoon";
     this.setState({utterance: utt});
     
-    const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';
+    const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';    
+    let url = new URL(urlStr);
+    let params = {utterance: utt};
+    url.search = new URLSearchParams(params);
 
-    axios.get(urlStr, {
-      params: {
-        "utterance": utt
-      }
+    fetch(url, {
+      method: 'GET'
     })
-    .then(function (response) {
-      this.setState({nluResponse: response.data});
-    }.bind(this))
-    .catch(function (error) {
-      console.log(error);
+    .then(res => {
+      if (res.status !== 200)
+        return undefined
+      return res.json();
     })
-    .then(function () {
-      // always executed
-    }); 
-    
-    // let url = new URL('https://cionlu.herokuapp.com/api/v1/nlu');
-    // let params = {utterance: utt};
-    // url.search = new URLSearchParams(params);
-
-    // fetch(url, {
-    //   method: 'GET'
-    // })
-    // .then(res => {
-    //   if (res.status !== 200)
-    //     return undefined
-    //   return res.json();
-    // })
-    // .then(response => {
-    //   if (response)
-    //     this.setState({nluResponse: response})
-    // })
-    // .catch(error => console.error('Error:', error));
+    .then(response => {
+      if (response)
+        this.setState({nluResponse: response})
+    })
+    .catch(error => console.error('Error:', error));
   }
 
   render() {
