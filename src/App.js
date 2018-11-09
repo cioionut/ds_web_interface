@@ -228,7 +228,7 @@ class App extends Component {
                   value={this.state.utterance}
                   onChange={this.handleUtteranceChange} 
                   placeholder="i'd like a flight on july ninth from orlando to kansas city in the afternoon" />
-                <Button className="float-right submit-btn" color="info" type="submit">Analyze</Button>
+                <Button className="float-right submit-btn" color="primary" type="submit">Analyze</Button>
               </FormGroup>
             </Form>
           </Col>
