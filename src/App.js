@@ -157,7 +157,8 @@ class App extends Component {
     url.search = new URLSearchParams(params)
 
     fetch(url, {
-      method: 'GET'
+      method: 'GET',
+      mode: 'cors'
     })
     .then(res => {
       if (res.status !== 200)
