@@ -101,17 +101,17 @@ class NLUResponse extends Component {
             <Row>
               <Col sm="12">
                 <Table hover>
-                    <thead>
-                      <tr>
-                        <th>Type</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><h4>{intent}</h4></td>
-                      </tr>
-                    </tbody>
-                  </Table>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key="0">
+                      <td>{intent}</td>
+                    </tr>
+                  </tbody>
+                </Table>
               </Col>
             </Row>
           </TabPane>
