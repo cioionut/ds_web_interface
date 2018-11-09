@@ -72,11 +72,7 @@ class App extends Component {
     url.search = new URLSearchParams(params)
 
     fetch(url, {
-      method: 'GET',
-      mode: "cors",
-      headers: {
-        "Content-Type": "text/plain"
-      }
+      method: 'GET'
     })
     .then(res => {
       if (res.status !== 200)
@@ -106,11 +102,7 @@ class App extends Component {
     url.search = new URLSearchParams(params);
 
     fetch(url, {
-      method: 'GET',
-      mode: "cors",
-      headers: {
-        "Content-Type": "text/plain"
-      }
+      method: 'GET'
     })
     .then(res => {
       if (res.status !== 200)
