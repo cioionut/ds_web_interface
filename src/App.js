@@ -37,6 +37,7 @@ class NLUResponse extends Component {
   }
 
   render() {
+    let entities = this.props.entities || []
     return (
       <div>
         <p></p>
@@ -73,7 +74,7 @@ class NLUResponse extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.props.entities.map((entity, idx) => {
+                    {entities.map((entity, idx) => {
                       return (
                       <tr key={idx}>
                         <td>{entity.entity_value}</td>
@@ -136,7 +137,7 @@ class App extends Component {
         ],
         "intent": {
             "confidence_score": 0.0,
-            "intent_type": ""
+            "intent_type": "t1"
         },
         text: ""
       }
