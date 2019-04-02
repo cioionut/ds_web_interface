@@ -171,7 +171,7 @@ class App extends Component {
         return undefined
       return res.json();
     })
-    .then(response => {
+    .then(response => {      
       if (response)
         this.setState({nluResponse: response})
     })
@@ -188,8 +188,8 @@ class App extends Component {
     
     this.setState({utterance: this.startUtt});
 
-    // const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';
-    const urlStr = 'http://localhost:5000/api/v1/nlu';
+    const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';
+    // const urlStr = 'http://localhost:5000/api/v1/nlu';
     let url = new URL(urlStr);
     let params = {utterance: this.startUtt};
     url.search = new URLSearchParams(params);
