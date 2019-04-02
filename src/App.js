@@ -37,19 +37,6 @@ class NLUResponse extends Component {
   }
 
   render() {
-    let slots = {};
-    let intent = this.props.intent.replace(/atis_/, '');
-    this.props.slots.forEach(slot => {
-      let slotType = slot[1].replace(/B-|I-/, '');
-      let slotName = slot[0];
-      if (slotType !== 'O') {
-        if (slotType in slots)
-          slots[slotType] += " " + slotName;
-        else
-          slots[slotType] = slotName;
-      }
-    });
-    
     return (
       <div>
         <p></p>
@@ -80,16 +67,18 @@ class NLUResponse extends Component {
                 <Table hover>
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Type</th>
+                      <th>Value</th>
+                      <th>Type Name</th>
+                      <th>Confidence Score</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(slots).map(([type, name], idx) => {
+                    {this.props.entities.map((entity, idx) => {
                       return (
                       <tr key={idx}>
-                        <td>{name}</td>
-                        <td>{type}</td>
+                        <td>{entity.entity_value}</td>
+                        <td>{entity.entity_type}</td>
+                        <td>{parseFloat(entity.confidence_score).toFixed(3)}</td>
                       </tr>)
                     })}
                   </tbody>
@@ -104,11 +93,13 @@ class NLUResponse extends Component {
                   <thead>
                     <tr>
                       <th>Type</th>
+                      <th>Confidence Score</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr key="0">
-                      <td>{intent}</td>
+                      <td>{this.props.intent.intent_type}</td>
+                      <td>{parseFloat(this.props.intent.confidence_score).toFixed(3)}</td>
                     </tr>
                   </tbody>
                 </Table>
@@ -134,25 +125,38 @@ class App extends Component {
     this.state = {
       collapsed: true,
       nluResponse: {
-        pred_slot_labels_str: "test",
-        pred_intent_label: "test",
-        pred_slot_labels: [
-          ["slot0", "utt_word"],
-          ["slot1", "utt_word"]
+        "entities": [
+          {
+            "confidence_score": 0.0,
+            "end": null,
+            "entity_type": "t1",
+            "entity_value": "slot1",
+            "start": null
+          }
         ],
-        message: ""
-      },
-      utterance: ""
+        "intent": {
+            "confidence_score": 0.0,
+            "intent_type": ""
+        },
+        text: ""
+      }
     };
   }
 
   handleUtteranceChange(elem) {
-    this.setState({utterance: elem.target.value})
+    let utt = elem.target.value;
+    // check if enter was hitted
+    if (utt.charAt(utt.length-1) === '\n')
+      this.handleSubmitFrom(elem);
+    else
+      this.setState({utterance: elem.target.value});
   }
 
   handleSubmitFrom(elem) {
     elem.preventDefault();
     const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';
+    // const urlStr = 'http://localhost:5000/api/v1/nlu';
+
     let url = new URL(urlStr);
     let params = {utterance: this.state.utterance};
     url.search = new URLSearchParams(params);
@@ -183,7 +187,8 @@ class App extends Component {
     
     this.setState({utterance: this.startUtt});
 
-    const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';    
+    // const urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';
+    const urlStr = 'http://localhost:5000/api/v1/nlu';
     let url = new URL(urlStr);
     let params = {utterance: this.startUtt};
     url.search = new URLSearchParams(params);
@@ -223,7 +228,7 @@ class App extends Component {
       <Container className="nlu-content">
         <Row>
           <Col>
-            <h5>Ask about your flights</h5>
+            <h5>State something</h5>
             <Form onSubmit={this.handleSubmitFrom}>
               <FormGroup>
                 <Input type="textarea" name="utterance" id="utterance"
@@ -240,8 +245,8 @@ class App extends Component {
           <Col>
             <h5>See Language Understanding in action</h5>
             <NLUResponse
-              intent={this.state.nluResponse.pred_intent_label}
-              slots={this.state.nluResponse.pred_slot_labels}
+              intent={this.state.nluResponse.intent}
+              entities={this.state.nluResponse.entities}
             />
           </Col>
         </Row>
