@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import './app.css';
 import NLU from '../nlu/nlu'
+import Dialog from '../dialog/dialog'
+
 import {
   Collapse,
   Navbar,
@@ -31,26 +33,28 @@ class App extends Component {
   }
 
   render() {
-
     // CIO Dialog System
     return (
       <Router>
         <div>
-        <Navbar color="faded" light expand="md">
-          <NavbarBrand href="/" className="mr-auto brand-title">X</NavbarBrand>
-          <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-          <Collapse isOpen={!this.state.collapsed} navbar>
-            <Nav navbar right="true" className="ml-auto">
-              <NavItem>
-                <NavLink tag={Link} to="/">NLU</NavLink>
-              </NavItem>
-            </Nav>
-          </Collapse>
-        </Navbar>
+          <Navbar color="faded" light expand="md">
+            <NavbarBrand href="/" className="mr-auto brand-title">X</NavbarBrand>
+            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
+            <Collapse isOpen={!this.state.collapsed} navbar>
+              <Nav navbar right="true" className="ml-auto">
+                <NavItem>
+                  <NavLink tag={Link} to="/">NLU</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={Link} to="/dialog">Dialog</NavLink>
+                </NavItem>
+              </Nav>
+            </Collapse>
+          </Navbar>
 
-        {/* main container */}
-        <Route path="/" exact component={NLU} />
-        {/* <Route path="/about/" component={About} /> */}
+          {/* main container */}
+          <Route path="/" exact component={NLU} />
+        <Route path="/dialog/" component={Dialog} />
         </div>
       </Router>
 
