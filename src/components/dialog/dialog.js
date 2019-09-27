@@ -139,40 +139,24 @@ class Dialog extends Component {
   render() {
     return (
       <div>
-        <div className="container-fluid chat-container">
-          <div className="row h-100">
-            <div className="col d-flex p-0">
+        <div className="container">
+          <div className="row">
+            <div className="col">
                 <div className="card">
-                    <div className="card-header bg-darkblue text-white py-1 px-2">
-                        <div className="d-flex flex-row justify-content-start">
-                            <div className="col-1 p-1">
-                                <button className="btn text-white bg-darkblue p-0 hover-color-lightgray">
-                                    <i className="fas fa-bars fa-2x"></i>
-                                </button>
-                            </div>
-                            <div className="col">
-                                <div className="my-0">
-                                    <b>Active d</b>
-                                </div>
-                                <div className="my-0">
-                                    <small>stats 0000</small>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="card-header">
+                      <h5>C</h5>
                     </div>
-                    <div className="card-body bg-lightgrey d-flex flex-column p-0">
+                    <div className="card-body d-flex flex-column p-1">
                         <MessageList messages={this.state.dialog} />
-                        <form onSubmit={this.handleSubmitFrom}>
+                        <form onSubmit={this.handleSubmitFrom} className="mt-3 p-1">
                           <div className="form-group">
-                            <input type="text" className="form-control" id="utterance" aria-describedby="utteranceHelp"
+                            <input type="text" className="form-control" id="utterance"
                               value={this.state.utterance}
                               onChange={this.handleUtteranceChange} 
                               placeholder={this.startUtt}
                             />
                           </div>
-                          <button type="submit" className="btn btn-primary float-right">Send
-                          {/* <i className="fab fa-telegram-plane fa-2x"></i> */}                    
-                          </button>
+                          <button type="submit" className="btn btn-primary float-right">Send</button>
                         </form>
                     </div>
                 </div>

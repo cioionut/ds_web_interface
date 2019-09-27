@@ -8,6 +8,8 @@ import {
   Form, FormGroup, Input, Button
 } from 'reactstrap';
 
+import './nlu.css';
+
 class NLU extends Component {
   constructor(props) {
     super(props);

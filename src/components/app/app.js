@@ -54,7 +54,7 @@ class App extends Component {
 
           {/* main container */}
           <Route path="/" exact component={NLU} />
-        <Route path="/dialog/" component={Dialog} />
+          <Route path="/dialog/" component={Dialog} />
         </div>
       </Router>
 
