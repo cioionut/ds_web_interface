@@ -149,14 +149,16 @@ class Dialog extends Component {
                     <div className="card-body d-flex flex-column p-1">
                         <MessageList messages={this.state.dialog} />
                         <form onSubmit={this.handleSubmitFrom} className="mt-3 p-1">
-                          <div className="form-group">
+                          <div className="input-group">
                             <input type="text" className="form-control" id="utterance"
                               value={this.state.utterance}
                               onChange={this.handleUtteranceChange} 
                               placeholder={this.startUtt}
                             />
+                            <div class="input-group-prepend">
+                              <button type="submit" className="btn btn-primary">Send</button>
+                            </div>
                           </div>
-                          <button type="submit" className="btn btn-primary float-right">Send</button>
                         </form>
                     </div>
                 </div>
