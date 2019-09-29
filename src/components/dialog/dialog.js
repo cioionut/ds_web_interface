@@ -63,31 +63,40 @@ class Dialog extends Component {
   constructor(props) {
     super(props);
     this.startUtt = "...";
-    this.urlStr = 'https://cionlu.herokuapp.com/api/v1/nlu';  // 'http://localhost:5000/api/v1/nlu';
-
+    let host = 'http://0.0.0.0:5000';
+    // let host = 'https://cio-dialogsys.herokuapp.com';
+    this.apiUrl = `${host}/api/v1`;
     this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
     this.handleSubmitFrom = this.handleSubmitFrom.bind(this);
 
     this.state = {
       dialog: [],
-      nluResponse: {
-        "entities": [
-          {
-            "confidence_score": 0.0,
-            "end": null,
-            "entity_type": "t1",
-            "entity_value": "slot1",
-            "start": null
-          }
-        ],
-        "intent": {
-            "confidence_score": 0.0,
-            "intent_type": "t1"
-        },
-        text: ""
-      },
-      utterance: ""
+      apiResponse: {},
+      utterance: "",
+      sessionId: ""
     };
+  }
+
+  componentDidMount() {
+    let url = new URL(this.apiUrl + "/sessions");
+
+    fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors'
+    })
+    .then(res => {
+      if (res.status !== 200)
+        return undefined
+      return res.json();
+    })
+    .then(response => {      
+      if (response)
+        this.setState({
+          sessionId: response.session_id,
+        });
+    })
+    .catch(error => console.error('Error:', error));
   }
 
   handleUtteranceChange(elem) {
@@ -102,18 +111,25 @@ class Dialog extends Component {
   handleSubmitFrom(elem) {
     elem.preventDefault();
 
-    let url = new URL(this.urlStr);
-    let params = {utterance: this.state.utterance};
+    let url = new URL(`${this.apiUrl}/${this.state.sessionId}/message`);
     let dialog = this.state.dialog;
     dialog.push({
       isMe: true,
       text: this.state.utterance
     });
-
-    url.search = new URLSearchParams(params);
+    let payload = {
+      "input": {
+        "text": this.state.utterance
+      }
+    }
 
     fetch(url, {
-      method: 'GET',
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
       mode: 'cors'
     })
     .then(res => {
@@ -125,13 +141,13 @@ class Dialog extends Component {
       if (response)
         dialog.push({
           isMe: false,
-          text: "bot: " + this.state.utterance
+          text: response.output
         });
         this.setState({
-          nluResponse: response,
-          dialog: dialog
+          apiResponse: response,
+          dialog: dialog,
+          utterance: ""
         });
-
     })
     .catch(error => console.error('Error:', error));
   }
@@ -144,7 +160,7 @@ class Dialog extends Component {
             <div className="col">
                 <div className="card">
                     <div className="card-header">
-                      <h5>C</h5>
+                      <h5>My Virtual Asisstant</h5>
                     </div>
                     <div className="card-body d-flex flex-column p-1">
                         <MessageList messages={this.state.dialog} />
@@ -155,7 +171,7 @@ class Dialog extends Component {
                               onChange={this.handleUtteranceChange} 
                               placeholder={this.startUtt}
                             />
-                            <div class="input-group-prepend">
+                            <div className="input-group-prepend">
                               <button type="submit" className="btn btn-primary">Send</button>
                             </div>
                           </div>

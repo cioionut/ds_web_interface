@@ -38,7 +38,7 @@ class App extends Component {
       <Router>
         <div>
           <Navbar color="faded" light expand="md">
-            <NavbarBrand href="/" className="mr-auto brand-title">X</NavbarBrand>
+            <NavbarBrand href="/" className="mr-auto brand-title">CIO Dialog System</NavbarBrand>
             <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
             <Collapse isOpen={!this.state.collapsed} navbar>
               <Nav navbar right="true" className="ml-auto">
