@@ -166,7 +166,7 @@ class Dialog extends Component {
                         <MessageList messages={this.state.dialog} />
                         <form onSubmit={this.handleSubmitFrom} className="mt-3 p-1">
                           <div className="input-group">
-                            <input type="text" className="form-control" id="utterance"
+                            <input type="text" className="form-control" id="utterance" autocomplete="off"
                               value={this.state.utterance}
                               onChange={this.handleUtteranceChange} 
                               placeholder={this.startUtt}

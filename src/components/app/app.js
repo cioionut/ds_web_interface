@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import './app.css';
-import NLU from '../nlu/nlu'
+// import NLU from '../nlu/nlu'
 import Dialog from '../dialog/dialog'
 
 import {
@@ -35,26 +35,26 @@ class App extends Component {
   render() {
     // CIO Dialog System
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <div>
           <Navbar color="faded" light expand="md">
             <NavbarBrand href="/" className="mr-auto brand-title">CIO Dialog System</NavbarBrand>
             <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
             <Collapse isOpen={!this.state.collapsed} navbar>
               <Nav navbar right="true" className="ml-auto">
-                <NavItem>
+                {/* <NavItem>
                   <NavLink tag={Link} to="/">NLU</NavLink>
-                </NavItem>
+                </NavItem> */}
                 <NavItem>
-                  <NavLink tag={Link} to="/dialog">Dialog</NavLink>
+                  <NavLink tag={Link} to="/">Assistant</NavLink>
                 </NavItem>
               </Nav>
             </Collapse>
           </Navbar>
 
           {/* main container */}
-          <Route path="/" exact component={NLU} />
-          <Route path="/dialog/" component={Dialog} />
+          {/* <Route path="/" exact component={NLU} /> */}
+          <Route path="/" component={Dialog} />
         </div>
       </Router>
 
