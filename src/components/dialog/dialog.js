@@ -63,8 +63,8 @@ class Dialog extends Component {
   constructor(props) {
     super(props);
     this.startUtt = "...";
-    let host = 'http://0.0.0.0:5000';
-    // let host = 'https://cio-dialogsys.herokuapp.com';
+    // let host = 'http://0.0.0.0:5000';
+    let host = 'https://cio-dialogsys.herokuapp.com';
     this.apiUrl = `${host}/api/v1`;
     this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
     this.handleSubmitFrom = this.handleSubmitFrom.bind(this);
@@ -110,6 +110,7 @@ class Dialog extends Component {
 
   handleSubmitFrom(elem) {
     elem.preventDefault();
+    this.setState({utterance: ""})
 
     let url = new URL(`${this.apiUrl}/${this.state.sessionId}/message`);
     let dialog = this.state.dialog;
@@ -146,7 +147,6 @@ class Dialog extends Component {
         this.setState({
           apiResponse: response,
           dialog: dialog,
-          utterance: ""
         });
     })
     .catch(error => console.error('Error:', error));
