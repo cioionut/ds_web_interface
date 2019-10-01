@@ -68,8 +68,8 @@ class Dialog extends Component {
     this.restoreSessionWelcomeMsg = "Bine ai revenit! Te pot ajuta cu trimiterea facturii curente sau cu actualizarea indexului. Scrie-mi daca mai ai nevoie de mine!"
 
     this.startUtt = "...";
-    let host = 'http://0.0.0.0:5000';
-    // let host = 'https://cio-dialogsys.herokuapp.com';
+    // let host = 'http://0.0.0.0:5000';
+    let host = 'https://cio-dialogsys.herokuapp.com';
     this.apiUrl = `${host}/api/v1`;
     this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
     this.handleSubmitFrom = this.handleSubmitFrom.bind(this);
@@ -222,10 +222,13 @@ class Dialog extends Component {
       if (response)  {
         this.setState(state => {
           let new_dialog = [...state.dialog]
-          new_dialog.push({
-            isMe: false,
-            text: response.output
+          response.outputs.forEach(output => {
+            new_dialog.push({
+              isMe: false,
+              text: output
+            });
           });
+          
           return {
             apiResponse: response,            
             dialog: new_dialog
