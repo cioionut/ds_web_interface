@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "8ed36c7e5feb94c7b38d",
+    "revision": "12cd1e270c9f9e2fae9a",
     "url": "/nlu-demo/static/css/main.e168e74d.chunk.css"
   },
   {
-    "revision": "8ed36c7e5feb94c7b38d",
-    "url": "/nlu-demo/static/js/main.5a50a8ff.chunk.js"
+    "revision": "12cd1e270c9f9e2fae9a",
+    "url": "/nlu-demo/static/js/main.e9c9b4be.chunk.js"
   },
   {
     "revision": "679cf098e31eeea79620",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/nlu-demo/static/js/2.77453f39.chunk.js"
   },
   {
-    "revision": "caff42b633c3ef4c87ae23e67279ad9b",
+    "revision": "580a7c5c6e23903c859db145c5427cf2",
     "url": "/nlu-demo/index.html"
   }
 ];
