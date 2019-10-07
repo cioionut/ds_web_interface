@@ -63,7 +63,6 @@ class Dialog extends Component {
   constructor(props) {
     super(props);
     this.serverNotAvailableMsg = "Incerc sa stabilesc conexiunea cu serverul de dialog, incearca te rog peste cateva momente";
-    this.welcomeMsg = "Buna! Eu sunt EnelBot, asistentul tau virtual. Te pot ajuta cu trimiterea facturii curente sau cu actualizarea indexului. Scrie-mi daca ai nevoie de mine!"
     this.sessionExpiredMsg = "Din cauza inactivitatii sesiunea de dialog s-a incheiat, voi deschide o noua conversatie."
     this.restoreSessionWelcomeMsg = "Bine ai revenit! Te pot ajuta cu trimiterea facturii curente sau cu actualizarea indexului. Scrie-mi daca mai ai nevoie de mine!"
 
@@ -77,16 +76,23 @@ class Dialog extends Component {
     this.state = {
       dialog: [],
       apiResponse: {},
-      utterance: "",
-      sessionId: ""
+      utterance: ""
     };
   }
 
   componentDidMount() {
-    let url = new URL(this.apiUrl + "/sessions");
-
+    let url = new URL(this.apiUrl + "/message");
+    let payload = {
+      "input": {
+        "text": this.state.utterance
+      }
+    }
     fetch(url, {
       method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json'
+      },
       credentials: 'include',
       mode: 'cors'
     })
@@ -99,12 +105,14 @@ class Dialog extends Component {
       if (response) {
         this.setState(state => {
           let new_dialog = [...state.dialog]
-          new_dialog.push({
-            isMe: false,
-            text: this.welcomeMsg
-          })
+          response.outputs.forEach(output => {
+            new_dialog.push({
+              isMe: false,
+              text: output
+            });
+          });
           return {
-            sessionId: response.session_id,
+            apiResponse: response,            
             dialog: new_dialog
           }
         });
@@ -138,7 +146,7 @@ class Dialog extends Component {
     elem.preventDefault();
     this.setState({utterance: ""})
 
-    let url = new URL(`${this.apiUrl}/${this.state.sessionId}/message`);
+    let url = new URL(`${this.apiUrl}/message`);
     // add user utterance to dialog list
     this.setState(state => {
       let new_dialog = [...state.dialog] 
@@ -152,7 +160,8 @@ class Dialog extends Component {
     let payload = {
       "input": {
         "text": this.state.utterance
-      }
+      },
+      "dialog_state": this.state.apiResponse.dialog_state
     }
     fetch(url, {
       method: 'POST',
@@ -165,55 +174,6 @@ class Dialog extends Component {
     })
     .then(res => {
       if (res.status !== 200) {
-        if (res.status === 404) {
-          // session has expired
-          this.setState(state => {
-            let new_dialog = [...state.dialog]
-            new_dialog.push({
-              isMe: false,
-              text: this.sessionExpiredMsg
-            });
-            return { dialog: new_dialog }
-          });
-          // create a new session
-          let url = new URL(this.apiUrl + "/sessions");
-          fetch(url, {
-            method: 'POST',
-            credentials: 'include',
-            mode: 'cors'
-          })
-          .then(res => {
-            if (res.status !== 200)
-              return undefined
-            return res.json();
-          })
-          .then(response => {      
-            if (response) {
-              this.setState(state => {
-                let new_dialog = [...state.dialog]
-                new_dialog.push({
-                  isMe: false,
-                  text: this.restoreSessionWelcomeMsg
-                });
-                return {
-                  sessionId: response.session_id,
-                  dialog: new_dialog
-                }
-              });
-            }
-          })
-          .catch(error => {
-            this.setState(state => {
-              let new_dialog = [...state.dialog]
-              new_dialog.push({
-                isMe: false,
-                text: this.serverNotAvailableMsg
-              });
-              return {dialog: new_dialog}
-            });
-            console.error('Error:', error)
-          });          
-        }
         return undefined
       }
       return res.json();
@@ -228,12 +188,11 @@ class Dialog extends Component {
               text: output
             });
           });
-          
           return {
             apiResponse: response,            
             dialog: new_dialog
           }
-        });        
+        });
       }
     })
     .catch(error => {
