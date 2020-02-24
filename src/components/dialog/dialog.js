@@ -68,8 +68,8 @@ class Dialog extends Component {
     this.stopDialogVariable = "$leg_op"
 
     this.startUtt = "...";
-    let host = 'http://0.0.0.0:5000';
-    // let host = 'https://cio-dialogsys.herokuapp.com';
+    // let host = 'http://0.0.0.0:5000';
+    let host = 'https://cio-dialogsys.herokuapp.com';
     this.apiUrl = `${host}/api/v1`;
     this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
     this.handleSubmitFrom = this.handleSubmitFrom.bind(this);
