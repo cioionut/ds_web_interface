@@ -65,19 +65,53 @@ class Dialog extends Component {
     this.serverNotAvailableMsg = "Incerc sa stabilesc conexiunea cu serverul de dialog, incearca te rog peste cateva momente";
     this.sessionExpiredMsg = "Din cauza inactivitatii sesiunea de dialog s-a incheiat, voi deschide o noua conversatie."
     this.restoreSessionWelcomeMsg = "Bine ai revenit! Te pot ajuta cu trimiterea facturii curente sau cu actualizarea indexului. Scrie-mi daca mai ai nevoie de mine!"
+    this.stopDialogVariable = "$leg_op"
 
     this.startUtt = "...";
-    // let host = 'http://0.0.0.0:5000';
-    let host = 'https://cio-dialogsys.herokuapp.com';
+    let host = 'http://0.0.0.0:5000';
+    // let host = 'https://cio-dialogsys.herokuapp.com';
     this.apiUrl = `${host}/api/v1`;
     this.handleUtteranceChange = this.handleUtteranceChange.bind(this);
     this.handleSubmitFrom = this.handleSubmitFrom.bind(this);
+    this.handleResponse = this.handleResponse.bind(this);
+
 
     this.state = {
+      stopDialog: false,
       dialog: [],
       apiResponse: {},
       utterance: ""
     };
+  }
+
+  handleResponse(response) {      
+    if (response)  {
+      this.setState(state => {
+        let newDialog = [...state.dialog];
+        let rspOutputs = [];
+        let stopDialog = false;
+        response.outputs.forEach(output => {
+          rspOutputs.push({
+            isMe: false,
+            text: output
+          });
+        });
+        
+        // prompt only first response in case of stopDialog
+        // todo: Fix in dialog engine
+        stopDialog = response.dialog_state.context_variables[this.stopDialogVariable];
+        if (stopDialog && rspOutputs.length > 0)
+          newDialog.push(rspOutputs[0])
+        else
+          newDialog = newDialog.concat(rspOutputs)
+
+        return {
+          apiResponse: response,            
+          dialog: newDialog,
+          stopDialog: stopDialog
+        }
+      });
+    }
   }
 
   componentDidMount() {
@@ -101,23 +135,7 @@ class Dialog extends Component {
         return undefined
       return res.json();
     })
-    .then(response => {   
-      if (response) {
-        this.setState(state => {
-          let new_dialog = [...state.dialog]
-          response.outputs.forEach(output => {
-            new_dialog.push({
-              isMe: false,
-              text: output
-            });
-          });
-          return {
-            apiResponse: response,            
-            dialog: new_dialog
-          }
-        });
-      }
-    })
+    .then(this.handleResponse)
     .catch(error => {
       this.setState(state => {
         let new_dialog = [...state.dialog]
@@ -178,23 +196,7 @@ class Dialog extends Component {
       }
       return res.json();
     })
-    .then(response => {      
-      if (response)  {
-        this.setState(state => {
-          let new_dialog = [...state.dialog]
-          response.outputs.forEach(output => {
-            new_dialog.push({
-              isMe: false,
-              text: output
-            });
-          });
-          return {
-            apiResponse: response,            
-            dialog: new_dialog
-          }
-        });
-      }
-    })
+    .then(this.handleResponse)
     .catch(error => {
       this.setState(state => {
         let new_dialog = [...state.dialog]
@@ -230,7 +232,7 @@ class Dialog extends Component {
                               placeholder={this.startUtt}
                             />
                             <div className="input-group-prepend">
-                              <button type="submit" className="btn btn-primary">Send</button>
+                              <button type="submit" className="btn btn-primary" disabled={this.state.stopDialog}>Send</button>
                             </div>
                           </div>
                         </form>
